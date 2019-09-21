@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'centos:centos7.6.1810'
-	    args '-u root:root'
+	    args '-u root:root --name nginx_sourced_2'
         }
     }
     
@@ -87,6 +87,15 @@ pipeline {
                 }
             }
         }
+	stage('Упаковываем В докер образ') {
+	    steps('NNNNAAAAAAAAMMMEEEE_OF_STEP') {
+		echo 'Коммитим контейнер nginx_sourced_2 в образ'
+	        sh 'docker commit nginx_sourced_2 nginx_sourced_2'
+		echo 'Проверяем запустится ли контейнер из вновь-созданного образа'
+		sh 'docker run -p 8081:8081 --name nginx_sourced_2 -d nginx_sourced_2'
+		sh 'docker exec nginx_sourced_2 nginx -v && nginx -t'
+	    }
+	}
     }
 }
  
