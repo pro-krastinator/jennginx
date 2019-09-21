@@ -88,6 +88,7 @@ pipeline {
             }
         }
 	stage('Упаковываем В докер образ') {
+	    agent master
 	    steps('NNNNAAAAAAAAMMMEEEE_OF_STEP') {
 		echo 'Коммитим контейнер nginx_sourced_2 в образ'
 	        sh 'docker commit nginx_sourced_2 nginx_sourced_2'
