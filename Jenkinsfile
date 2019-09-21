@@ -34,7 +34,7 @@ pipeline {
         }
         stage('Собираем') {
             steps {
-                echo "Конфигурируем" 
+                echo "Конфигурируем, запекаем и ставим" 
                 sh '''
 		   cd ./nginx_src \
                    && ./configure \
@@ -61,6 +61,22 @@ pipeline {
                      && make \
 		     && make install
                 '''
+		echo "Создаем юзера, настраиваем права доступа и разрешения..."
+	        sh '''
+		   adduser -c "Nginx user" nginx \
+		   && setcap cap_net_bind_service=ep /usr/sbin/nginx \
+		   && touch /run/nginx.pid \
+		   && mkdir -p /var/www/html \
+		   && mkdir -p /etc/nginx/conf.d \
+		   && chown -R nginx:nginx /var/www/html /etc/nginx/ /etc/nginx /etc/nginx/nginx.conf /var/log/nginx /usr/share/nginx /run/nginx.pid
+		   '''
+		echo 'Убираем за собой...'					   
+		sh '''
+		   yum remove -y  wget git \
+		   && yum autoremove -y && \
+		   cd ..
+		   rm -rf ./nginx_src*
+		   '''
             }
  
         }
